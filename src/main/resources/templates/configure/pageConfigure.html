@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" type="text/css" href="/css/formSelects-v4.css"/>
+<head th:include="layout :: htmlhead" th:with="title='角色管理'"></head>
+<script type="text/javascript" src="/js/dateUtils.js"></script>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <!--头-->
+    <div th:replace="fragments/head :: header"></div>
+    <div class="layui-body" style="margin: 1%">
+        <div class="layui-container">
+            <div class="layui-row">
+                <div class="layui-col-md2">
+                </div>
+                <div class="layui-col-md8">
+                    <form class="layui-form" action="" style="margin-top: 50px">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">页面名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">联系方式</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="tel" required  lay-verify="required" placeholder="请输入联系方式" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">地址</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="address" required  lay-verify="required" placeholder="请输入地址" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+<!--                        <div class="layui-form-item">-->
+<!--                            <label class="layui-form-label">密码框</label>-->
+<!--                            <div class="layui-input-inline">-->
+<!--                                <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">-->
+<!--                            </div>-->
+<!--                            <div class="layui-form-mid layui-word-aux">辅助文字</div>-->
+<!--                        </div>-->
+<!--                        <div class="layui-form-item">-->
+<!--                            <label class="layui-form-label">选择框</label>-->
+<!--                            <div class="layui-input-block">-->
+<!--                                <select name="city" lay-verify="required">-->
+<!--                                    <option value=""></option>-->
+<!--                                    <option value="0">北京</option>-->
+<!--                                    <option value="1">上海</option>-->
+<!--                                    <option value="2">广州</option>-->
+<!--                                    <option value="3">深圳</option>-->
+<!--                                    <option value="4">杭州</option>-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="layui-form-item">-->
+<!--                            <label class="layui-form-label">复选框</label>-->
+<!--                            <div class="layui-input-block">-->
+<!--                                <input type="checkbox" name="like[write]" title="写作">-->
+<!--                                <input type="checkbox" name="like[read]" title="阅读" checked>-->
+<!--                                <input type="checkbox" name="like[dai]" title="发呆">-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="layui-form-item">-->
+<!--                            <label class="layui-form-label">开关</label>-->
+<!--                            <div class="layui-input-block">-->
+<!--                                <input type="checkbox" name="switch" lay-skin="switch">-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="layui-form-item">-->
+<!--                            <label class="layui-form-label">单选框</label>-->
+<!--                            <div class="layui-input-block">-->
+<!--                                <input type="radio" name="sex" value="男" title="男">-->
+<!--                                <input type="radio" name="sex" value="女" title="女" checked>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">首页轮播1</label>
+                            <div class="layui-input-block">
+                                <button type="button" class="layui-btn" id="test1" style="float: left">
+                                    <i class="layui-icon">&#xe67c;</i>上传图片
+                                </button>
+                                <div class="layui-form-mid layui-word-aux" id="image1" style="margin-left: 15px"></div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label">简介</label>
+                            <div class="layui-input-block">
+                                <textarea name="briefIntroduction" placeholder="请输入内容" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-col-md2">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--底部-->
+    <div th:replace="fragments/footer :: footer"></div>
+    <script>
+        //Demo
+        layui.use('form', function(){
+            var form = layui.form;
+
+            //监听提交
+            form.on('submit(formDemo)', function(data){
+                layer.msg(JSON.stringify(data.field));
+                return false;
+            });
+        });
+        layui.use('upload', function(){
+            var upload = layui.upload;
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#test1' //绑定元素
+                ,url: '/uploadFile' //上传接口
+                ,done: function(res){
+                    debugger
+                    if(res != null && res.code == '0'){
+                        $('#image1').html("");
+                        $('#image1').html(res.filePath);
+                    }else{
+                        layer.open({
+                            title: '警告'
+                            ,content: '上传失败，请重新尝试'
+                        });
+                    }
+                }
+                ,error: function(){
+                    //请求异常回调
+                }
+            });
+        });
+    </script>
+</div>
+</body>
+</html>
