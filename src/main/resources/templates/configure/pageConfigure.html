@@ -13,23 +13,25 @@
                 <div class="layui-col-md2">
                 </div>
                 <div class="layui-col-md8">
-                    <form class="layui-form" action="" style="margin-top: 50px">
+                    <button class="layui-btn layui-btn-normal" onclick="configureList()">返回列表</button>
+                    <form class="layui-form" action="" style="margin-top: 50px" id="configureForm">
+                        <input type="text" id="configureId" name="id"/>
                         <div class="layui-form-item">
                             <label class="layui-form-label">页面名称</label>
                             <div class="layui-input-block">
-                                <input type="text" name="title" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                                <input type="text" id="pageName" name="pageName" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">联系方式</label>
                             <div class="layui-input-block">
-                                <input type="text" name="tel" required  lay-verify="required" placeholder="请输入联系方式" autocomplete="off" class="layui-input">
+                                <input type="text" id="tel" name="tel" required  lay-verify="required" placeholder="请输入联系方式" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">地址</label>
                             <div class="layui-input-block">
-                                <input type="text" name="address" required  lay-verify="required" placeholder="请输入地址" autocomplete="off" class="layui-input">
+                                <input type="text" id="address" name="address" required  lay-verify="required" placeholder="请输入地址" autocomplete="off" class="layui-input">
                             </div>
                         </div>
 <!--                        <div class="layui-form-item">-->
@@ -85,7 +87,7 @@
                         <div class="layui-form-item layui-form-text">
                             <label class="layui-form-label">简介</label>
                             <div class="layui-input-block">
-                                <textarea name="briefIntroduction" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                <textarea id="briefIntroduction" name="briefIntroduction" placeholder="请输入内容" class="layui-textarea"></textarea>
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -110,7 +112,8 @@
 
             //监听提交
             form.on('submit(formDemo)', function(data){
-                layer.msg(JSON.stringify(data.field));
+                // layer.msg(JSON.stringify(data.field));
+                formSubmit(data);
                 return false;
             });
         });
@@ -137,6 +140,45 @@
                 }
             });
         });
+    </script>
+    <script th:inline="javascript"> // 需要添加 th:inline 才能访问 model 中的属性
+    window.onload = function () {
+        // 获取ModelAndView中的pageConfigure对象
+        var pageConfigure = [[${pageConfigure}]];
+        //赋值
+        $('#configureId').val(pageConfigure.id);
+        $('#pageName').val(pageConfigure.pageName);
+        $('#tel').val(pageConfigure.tel);
+        $('#address').val(pageConfigure.address);
+        $('#briefIntroduction').text(pageConfigure.briefIntroduction);
+    }
+    function configureList(){
+        window.location.href="/configure/pageConfigureList";
+    }
+
+    //提交表单
+    function formSubmit(obj){
+        $.ajax({
+            type: "POST",
+            data: $("#configureForm").serialize(),
+            url: "/configure/addOrUpdateConfigure",
+            success: function (data) {
+                if (data.code == 1) {
+                    layer.alert(data.msg,function(){
+                        layer.closeAll();
+                        window.location.href="/configure/pageConfigureList";
+                    });
+                } else {
+                    layer.alert(data.msg);
+                }
+            },
+            error: function () {
+                layer.alert("操作请求错误，请您稍后再试",function(){
+                    layer.closeAll();
+                });
+            }
+        });
+    }
     </script>
 </div>
 </body>

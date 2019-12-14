@@ -9,9 +9,12 @@ import com.haiyu.manager.dto.UserSearchDTO;
 import com.haiyu.manager.pojo.PageConfigure;
 import com.haiyu.manager.response.PageDataResult;
 import com.haiyu.manager.service.PageConfigureService;
+import com.haiyu.manager.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,5 +37,17 @@ public class PageConfigureServiceImpl implements PageConfigureService {
         }
 
         return pageDataResult;
+    }
+
+    @Override
+    public Integer addOrUpdateConfigure(PageConfigure pageConfigure){
+        int i = 0;
+        pageConfigure.setCreateTime(DateUtils.parseDateToStr("yyyy-MM-dd HH:mm:ss",new Date()));
+        if(pageConfigure.getId() != null){
+            i = pageConfigureMapper.updateByPrimaryKeySelective(pageConfigure);
+        } else {
+            i = pageConfigureMapper.insert(pageConfigure);
+        }
+        return i;
     }
 }

@@ -55,17 +55,18 @@ $(function() {
 
         //监听工具条
         table.on('tool(configureTable)', function(obj){
+            debugger
             var data = obj.data;
             if(obj.event === 'del'){
                 //删除
-                delConfigure(data.id,obj);
+                delUser(data,data.id,data.sysUserName);
             } else if(obj.event === 'edit'){
                 //编辑
                 editConfigure(data);
             }
         });
 
-        //监听提交
+        监听提交
         form.on('submit(userSubmit)', function(data){
             // TODO 校验
             formSubmit(data);
@@ -93,31 +94,6 @@ $(function() {
         });
     });
 });
-
-function delConfigure(id,obj){
-    layer.confirm("确认要删除吗，删除后不能恢复", { title: "删除确认" }, function (index) {
-        $.ajax({
-            type: "POST",
-            data: {'id' : id},
-            url: "/configure/delConfigure",
-            success: function (data) {
-                if (data.code == 1) {
-                    layer.alert(data.msg,function(){
-                        layer.closeAll();
-                        load(obj);
-                    });
-                } else {
-                    layer.alert(data.msg);
-                }
-            },
-            error: function () {
-                layer.alert("操作请求错误，请您稍后再试",function(){
-                    layer.closeAll();
-                });
-            }
-        });
-    });
-}
 
 //提交表单
 function formSubmit(obj){
@@ -153,6 +129,104 @@ function editConfigure(data){
     console.log(data);
     window.location.href="/configure/pageConfigure?id=" + data.id;
 }
+
+//开通用户
+// function addUser(){
+//     openUser(null,"开通用户");
+// }
+// function openUser(data,title){
+//     var roleId = null;
+//     if(data==null || data==""){
+//         $("#id").val("");
+//     }else{
+//         $("#id").val(data.id);
+//         $("#username").val(data.sysUserName);
+//         $("#mobile").val(data.userPhone);
+//         roleId = data.roleId;
+//     }
+//     var pageNum = $(".layui-laypage-skip").find("input").val();
+//     $("#pageNum").val(pageNum);
+//     $.ajax({
+//         url:'/role/getRoles',
+//         dataType:'json',
+//         async: true,
+//         success:function(data){
+//             $.each(data,function(index,item){
+//                 if(!roleId){
+//                     var option = new Option(item.roleName,item.id);
+//                 }else {
+//                     var option = new Option(item.roleName,item.id);
+//                     // // 如果是之前的parentId则设置选中
+//                     if(item.id == roleId) {
+//                         option.setAttribute("selected",'true');
+//                     }
+//                 }
+//                 $('#roleId').append(option);//往下拉菜单里添加元素
+//                 form.render('select'); //这个很重要
+//             })
+//         }
+//     });
+//
+//     layer.open({
+//         type:1,
+//         title: title,
+//         fixed:false,
+//         resize :false,
+//         shadeClose: true,
+//         area: ['550px'],
+//         content:$('#setUser'),
+//         end:function(){
+//             cleanUser();
+//         }
+//     });
+// }
+
+// function delUser(obj,id,name) {
+//     var currentUser=$("#currentUser").html();
+//     if(null!=id){
+//         if(currentUser==id){
+//             layer.alert("对不起，您不能执行删除自己的操作！");
+//         }else{
+//             layer.confirm('您确定要删除'+name+'用户吗？', {
+//                 btn: ['确认','返回'] //按钮
+//             }, function(){
+//                 $.post("/user/updateUserStatus",{"id":id,"status":0},function(data){
+//                     if (data.code == 1) {
+//                         layer.alert(data.msg,function(){
+//                             layer.closeAll();
+//                             load(obj);
+//                         });
+//                     } else {
+//                         layer.alert(data.msg);
+//                     }
+//                 });
+//             }, function(){
+//                 layer.closeAll();
+//             });
+//         }
+//     }
+// }
+// //恢复
+// function recoverUser(obj,id) {
+//     if(null!=id){
+//         layer.confirm('您确定要恢复吗？', {
+//             btn: ['确认','返回'] //按钮
+//         }, function(){
+//             $.post("/user/updateUserStatus",{"id":id,"status":1},function(data){
+//                 if (data.code == 1) {
+//                     layer.alert(data.msg,function(){
+//                         layer.closeAll();
+//                         load(obj);
+//                     });
+//                 } else {
+//                     layer.alert(data.msg);
+//                 }
+//             });
+//         }, function(){
+//             layer.closeAll();
+//         });
+//     }
+// }
 
 function load(obj){
     //重新加载table
